@@ -1,11 +1,12 @@
 
-import { Button } from "antd"
+import { App as AntdApp } from 'antd';
+import { Router } from './router';
+
 function App() {
   return (
-    <div>
-      <h1>Hello, World!</h1>
-      <Button type="primary">Button</Button>
-    </div>
+    <AntdApp style={{height:'100%'}}>
+      <Router />
+    </AntdApp>
   )
 }
 
