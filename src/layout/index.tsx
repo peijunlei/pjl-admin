@@ -1,9 +1,10 @@
 
-import { MenuFoldOutlined, MenuUnfoldOutlined, UploadOutlined, UserOutlined, VideoCameraOutlined } from "@ant-design/icons"
+import { AccountBookOutlined, HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined, UploadOutlined, UserOutlined, VideoCameraOutlined } from "@ant-design/icons"
 import { Button, Layout, Menu, theme } from "antd"
 import { useState } from "react"
+import { Link, Outlet } from "react-router-dom"
 const { Header, Sider, Content } = Layout
-function App() {
+export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(false)
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -24,18 +25,18 @@ function App() {
           items={[
             {
               key: '1',
-              icon: <UserOutlined />,
-              label: 'nav 1',
+              icon: <HomeOutlined />,
+              label: <Link to="/">主页</Link>,
             },
             {
               key: '2',
-              icon: <VideoCameraOutlined />,
-              label: 'nav 2',
+              icon: <UserOutlined />,
+              label: <Link to="/system/account">账户</Link>,
             },
             {
               key: '3',
-              icon: <UploadOutlined />,
-              label: 'nav 3',
+              icon: <SettingOutlined />,
+              label: <Link to="/system/setting">设置</Link>,
             },
           ]}
         />
@@ -54,11 +55,10 @@ function App() {
           />
         </Header>
         <Content>
-          Content
+          <Outlet />
         </Content>
       </Layout>
     </Layout>
   )
 }
 
-export default App
