@@ -22,7 +22,7 @@ export function Router() {
     const routes: any[] = [
       {
         index: true,
-        element: <Navigate to="/home/dashboard" replace />
+        element: <Navigate to={import.meta.env.VITE_HOME_PAGE} replace />
       }
     ]
     for (const [key, value] of routeMap) {

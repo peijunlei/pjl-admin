@@ -1,5 +1,5 @@
 
-import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined,  UserOutlined } from "@ant-design/icons"
+import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons"
 import { Button, Layout, Menu, theme } from "antd"
 import { useState } from "react"
 import { Link, Outlet, useLocation } from "react-router-dom"
@@ -27,7 +27,7 @@ export default function DashboardLayout() {
             {
               key: '/home/dashboard',
               icon: <HomeOutlined />,
-              label: <Link to="/home/dashboard">主页</Link>,
+              label: <Link to={import.meta.env.VITE_HOME_PAGE}>主页</Link>,
             },
             {
               key: '/system/account',
