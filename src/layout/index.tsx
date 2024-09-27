@@ -1,11 +1,12 @@
 
-import { AccountBookOutlined, HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined, UploadOutlined, UserOutlined, VideoCameraOutlined } from "@ant-design/icons"
+import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined,  UserOutlined } from "@ant-design/icons"
 import { Button, Layout, Menu, theme } from "antd"
 import { useState } from "react"
-import { Link, Outlet } from "react-router-dom"
+import { Link, Outlet, useLocation } from "react-router-dom"
 const { Header, Sider, Content } = Layout
 export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(false)
+  const location = useLocation()
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -21,20 +22,20 @@ export default function DashboardLayout() {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['1']}
+          selectedKeys={[location.pathname]}
           items={[
             {
-              key: '1',
+              key: '/home/dashboard',
               icon: <HomeOutlined />,
-              label: <Link to="/">主页</Link>,
+              label: <Link to="/home/dashboard">主页</Link>,
             },
             {
-              key: '2',
+              key: '/system/account',
               icon: <UserOutlined />,
               label: <Link to="/system/account">账户</Link>,
             },
             {
-              key: '3',
+              key: '/system/setting',
               icon: <SettingOutlined />,
               label: <Link to="/system/setting">设置</Link>,
             },
