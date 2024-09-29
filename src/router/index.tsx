@@ -2,7 +2,7 @@ import { createHashRouter, Navigate, RouterProvider } from "react-router-dom";
 import DashboardLayout from "../layout";
 import { authRoutes, commonRoutes } from "./routes";
 import { lazy, Suspense, useMemo } from "react";
-import Loading from "@/components/Loading";
+import ProgressBar from "@/components/progress-bar";
 
 
 const Login = lazy(commonRoutes.login);
@@ -37,7 +37,7 @@ export function Router() {
         secondRoutes.push({
           path: item,
           element: (
-            <Suspense fallback={<Loading />} >
+            <Suspense fallback={<ProgressBar />} >
               <Component />
             </Suspense>
           )
@@ -103,7 +103,7 @@ export function Router() {
     {
       path: "/login",
       element: (
-        <Suspense fallback={<Loading />} >
+        <Suspense fallback={<ProgressBar />} >
           <Login />
         </Suspense>
       )
@@ -111,7 +111,7 @@ export function Router() {
     {
       path: "/404",
       element: (
-        <Suspense fallback={<Loading />} >
+        <Suspense fallback={<ProgressBar />} >
           <NotFound />
         </Suspense>
       )
