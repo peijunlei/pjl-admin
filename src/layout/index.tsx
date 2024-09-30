@@ -1,15 +1,17 @@
 
 import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons"
-import { Button, Layout, Menu, theme } from "antd"
-import { useEffect, useRef, useState } from "react"
+import { Button, Dropdown, Flex, Layout, Menu, theme } from "antd"
+import { useState } from "react"
 import { Link, Outlet, useLocation } from "react-router-dom"
 import cn from 'classnames'
+import useLocale from "@/locales/useLocale"
 const { Header, Sider, Content } = Layout
 export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(false)
   const conRef = useRef(null)
   const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
+  const { setLocale, currentLang } = useLocale()
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -68,16 +70,39 @@ export default function DashboardLayout() {
         <Header style={{ padding: 0, background: colorBgContainer }} className={cn({
           scrolled,
         })}>
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: '16px',
-              width: 64,
-              height: 64,
-            }}
-          />
+          <Flex align="center" justify="space-between">
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: '16px',
+                width: 64,
+                height: 64,
+              }}
+            />
+            <Dropdown
+              menu={{
+                items: [
+                  {
+                    key: 'en_US',
+                    label: 'English',
+                    onClick: () => setLocale('en_US'),
+                  },
+                  {
+                    key: 'zh_CN',
+                    label: '中文',
+                    onClick: () => setLocale('zh_CN'),
+                  },
+                ]
+              }}
+            >
+              <Button type="text">
+                {currentLang === 'en_US' ? 'English' : '中文'}
+              </Button>
+            </Dropdown>
+          </Flex>
+
         </Header>
         <Content className="container" ref={conRef}>
           <Outlet />

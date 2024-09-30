@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
+import './locales/i18n.ts'
 import './styles/index.css'
 
 const logo = `
