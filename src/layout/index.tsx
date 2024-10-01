@@ -49,7 +49,6 @@ export default function DashboardLayout() {
       return [...keys, location.pathname]
     })
   }, [location.pathname])
-  console.log('tabKeys', tabKeys)
   return (
     <Layout style={{ height: '100%' }}>
       <SiderNav />
