@@ -1,10 +1,5 @@
-
-
-
 export default function Index() {
   return (
-    <div>
-      setting
-    </div>
+      <h1>demo2</h1>
   )
 }

@@ -1,112 +1,120 @@
 
-import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons"
-import { Button, Dropdown, Flex, Layout, Menu, theme } from "antd"
-import { useState } from "react"
-import { Link, Outlet, useLocation } from "react-router-dom"
+import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons"
+import { Button, Card, ColorPicker, Divider, Drawer, Dropdown, Flex, FloatButton, Layout, Menu, Radio, Tabs, theme, Tooltip } from "antd"
+import { useEffect, useRef, useState } from "react"
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom"
 import cn from 'classnames'
 import useLocale from "@/locales/useLocale"
+import { presetThemes } from "@/constants/theme"
+import SiderNav from "./sider-nav"
+import { arryToTree } from "@/utils"
+import { ROUTES } from "@/constants/routes"
 const { Header, Sider, Content } = Layout
+
+const tree = arryToTree(ROUTES)
+
+const TAB_MAP = tree.reduce((map, item) => {
+  map.set(item.path, item.name)
+  if (item.children && item.children.length > 0) {
+    item.children.forEach((child) => {
+      map.set(child.path, child.name)
+      if (child.children && child.children.length > 0) {
+        child.children.forEach((c) => {
+          map.set(c.path, c.name)
+        })
+      }
+    })
+  }
+  return map
+}, new Map())
+
 export default function DashboardLayout() {
-  const [collapsed, setCollapsed] = useState(false)
-  const conRef = useRef(null)
+  const navgate = useNavigate()
+
   const [scrolled, setScrolled] = useState(false)
+  const [drawOpen, setDrawOpen] = useState(false)
+  const [openKeys, setOpenKeys] = useState<string[]>([])
+  const [tabKeys, setTabKeys] = useState<string[]>([])
   const location = useLocation()
+  const conRef = useRef(null)
   const { setLocale, currentLang } = useLocale()
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer, borderRadiusLG, colorPrimary },
   } = theme.useToken();
-
   useEffect(() => {
-    //当container容器滚动100px时，设置scrolled为true,否则为false
-    const handleScroll = () => {
-      if (conRef.current.scrollTop > 100) {
-        setScrolled(true)
-      } else {
-        setScrolled(false)
+    setTabKeys((keys) => {
+      if (keys.includes(location.pathname)) {
+        return keys
       }
-    }
-    conRef.current.addEventListener('scroll', handleScroll)
-  }, [])
+      return [...keys, location.pathname]
+    })
+  }, [location.pathname])
+  console.log('tabKeys', tabKeys)
   return (
     <Layout style={{ height: '100%' }}>
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="demo-logo-vertical" style={{
-          height: 32,
-          margin: 4,
-          fontSize: 20,
-          lineHeight: '32px',
-          color: '#fff',
-          textAlign: 'center',
-          letterSpacing: 3,
-          background: `rgba(255, 255, 255, .2)`,
-          borderRadius: borderRadiusLG,
-        }}>
-          {collapsed ? 'PJL' : 'PEIJUNLEI'}
-        </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={[
-            {
-              key: '/home/dashboard',
-              icon: <HomeOutlined />,
-              label: <Link to={import.meta.env.VITE_HOME_PAGE}>主页</Link>,
-            },
-            {
-              key: '/system/account',
-              icon: <UserOutlined />,
-              label: <Link to="/system/account">账户</Link>,
-            },
-            {
-              key: '/system/setting',
-              icon: <SettingOutlined />,
-              label: <Link to="/system/setting">设置</Link>,
-            },
-          ]}
-        />
-      </Sider>
+      <SiderNav />
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }} className={cn({
-          scrolled,
+          scrolled: false,
         })}>
           <Flex align="center" justify="space-between">
             <Button
               type="text"
-              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-              onClick={() => setCollapsed(!collapsed)}
+              icon={<MenuFoldOutlined />}
               style={{
-                fontSize: '16px',
                 width: 64,
                 height: 64,
               }}
             />
-            <Dropdown
-              menu={{
-                items: [
-                  {
-                    key: 'en_US',
-                    label: 'English',
-                    onClick: () => setLocale('en_US'),
-                  },
-                  {
-                    key: 'zh_CN',
-                    label: '中文',
-                    onClick: () => setLocale('zh_CN'),
-                  },
-                ]
+            <Button
+              type="text"
+              onClick={() => {
+                setLocale(currentLang === 'zh_CN' ? 'en_US' : 'zh_CN')
               }}
-            >
-              <Button type="text">
-                {currentLang === 'en_US' ? 'English' : '中文'}
-              </Button>
-            </Dropdown>
+              style={{
+                width: 64,
+                height: 64,
+              }}
+            > {currentLang === 'zh_CN' ? 'EN' : '中文'}</Button>
           </Flex>
 
         </Header>
+        <Tabs
+          activeKey={location.pathname}
+          onChange={(key) => {
+            navgate(key)
+          }}
+          items={tabKeys.map((key) => ({
+            key,
+            label: TAB_MAP.get(key)
+          }))}
+        />
         <Content className="container" ref={conRef}>
           <Outlet />
+          <FloatButton.Group shape="circle" style={{ insetInlineEnd: 24 }}>
+            <FloatButton.BackTop target={() => conRef.current!} />
+            <FloatButton icon={<SettingOutlined />} type="primary" onClick={() => setDrawOpen(true)} />
+          </FloatButton.Group>
         </Content>
+        <Drawer title="主题设置" onClose={() => setDrawOpen(false)} open={drawOpen} closeIcon={null}>
+          <Divider dashed style={{ borderColor: colorPrimary }} >预设颜色</Divider>
+          <Flex>
+            {
+              Object.entries(presetThemes).map(([key, value]) => {
+                return (
+                  <Tooltip title={key} key={key}>
+                    <Card
+                      hoverable
+                      style={{ background: value }}
+                    />
+                  </Tooltip>
+                )
+              })
+            }
+          </Flex>
+          <Divider dashed style={{ borderColor: colorPrimary }} >自定义颜色</Divider>
+          <ColorPicker />
+        </Drawer>
       </Layout>
     </Layout>
   )

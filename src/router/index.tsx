@@ -3,98 +3,102 @@ import DashboardLayout from "../layout";
 import { authRoutes, commonRoutes } from "./routes";
 import { lazy, Suspense, useMemo } from "react";
 import ProgressBar from "@/components/progress-bar";
+import { ROUTES } from "@/constants/routes";
+import { arryToTree } from "@/utils";
 
 
 const Login = lazy(commonRoutes.login);
 const NotFound = lazy(commonRoutes[404]);
-export function Router() {
-  const authRouters = useMemo(() => {
-    const routeMap = new Map()
-    Object.keys(authRoutes).map((key) => {
-      const [first, second] = key.split('_')
-      if (routeMap.has(first)) {
-        routeMap.set(first, [...routeMap.get(first), second])
-      } else {
-        routeMap.set(first, [second])
-      }
-    })
-    // 生成路由
-    const routes: any[] = [
-      {
-        index: true,
-        element: <Navigate to={import.meta.env.VITE_HOME_PAGE} replace />
-      }
-    ]
-    for (const [key, value] of routeMap) {
-      const secondRoutes = [{
-        index: true,
-        element: <Navigate to={`/${key}/${value[0]}`} replace />
-      }]
-      for (const item of value) {
-        // @ts-expect-error
-        const importItem = authRoutes[`${key}_${item}`]
-        const Component = lazy(importItem)
-        secondRoutes.push({
-          path: item,
-          element: (
-            <Suspense fallback={<ProgressBar />} >
-              <Component />
-            </Suspense>
-          )
-        })
+const tree = arryToTree(ROUTES)
 
-      }
-      routes.push({
-        path: key,
-        children: secondRoutes
+interface treeItem {
+  route: string
+  children: treeItem[]
+  id: string
+  parentId: string | null
+}
+function treeToRouter(tree: treeItem[], firstRoute = import.meta.env.VITE_HOME_PAGE, parentRoute = '') {
+  const routers: any[] = [
+    {
+      index: true,
+      element: <Navigate to={firstRoute} replace />
+    }
+  ]
+  for (const item of tree) {
+    const { route, children, id } = item
+    if (children && children.length > 0) {
+      const first = children[0]
+      const firstRoute = parentRoute ? `/${parentRoute}/${route}/${first.route}` : `/${route}/${first.route}`
+      const proute = parentRoute ? `${parentRoute}_${route}` : route
+      const childrenRouters = treeToRouter(children, firstRoute, proute)
+      routers.push({
+        path: route,
+        children: childrenRouters
+      })
+    } else {
+      const routeKey = parentRoute ? `${parentRoute}_${route}` : route
+      const importItem = authRoutes[routeKey]
+      const Component = lazy(importItem)
+      routers.push({
+        path: route,
+        element: (
+          <Suspense fallback={<ProgressBar />} >
+            <Component />
+          </Suspense>
+        )
       })
     }
-    return routes
+  }
+  return routers
+}
+
+export function Router() {
+  const authRouters = useMemo(() => {
+    return treeToRouter(tree)
   }, [])
-  console.log(authRouters)
+  // console.log(authRouters)
   const router = createHashRouter([
     {
       path: "/",
       element: <DashboardLayout />,
       children: [
-        ...authRouters
+        ...authRouters,
         // {
-        //   index: true,
-        //   element: <Navigate to="/home/dashboard" replace />,
-        // },
-        // {
-        //   path: 'home',
+        //   path: "setting",
         //   children: [
         //     {
         //       index: true,
-        //       element: <Navigate to="/home/dashboard" replace />
+        //       element: <Navigate to="/setting/system" replace />,
         //     },
         //     {
-        //       path: "dashboard",
-        //       element: <Suspense fallback={<Loading />} >
-        //         < Dashboard />
-        //       </Suspense>
-        //     },
-        //   ]
-        // },
-        // {
-        //   path: "system",
-        //   children: [
-        //     {
-        //       index: true,
-        //       element: <Navigate to="/system/account" replace />,
+        //       path: "system",
+        //       children: [
+        //         {
+        //           index: true,
+        //           element: <Navigate to="/setting/system/api" replace />,
+        //         },
+        //         {
+        //           path: "api",
+        //           element: <div>api2</div>
+        //         }
+        //       ]
         //     },
         //     {
-        //       path: "account",
-        //       element: <Suspense fallback={<Loading />} >
-        //         < SystemAccount />
-        //       </Suspense>
-        //     },
-        //     {
-        //       path: "setting",
-        //       element: <Suspense fallback={<Loading />} >
-        //         <SystemSetting />
-        //       </Suspense>
+        //       path: "auth",
+        //       children: [
+        //         {
+        //           index: true,
+        //           element: <Navigate to="/auth/role" replace />,
+        //         },
+        //         {
+        //           path: "role",
+        //           element: <div>role</div>
+        //         },
+        //         {
+        //           path: "menu",
+        //           element: <div></div>
+        //         }
+        //       ]
         //     }
         //   ]
         // }
