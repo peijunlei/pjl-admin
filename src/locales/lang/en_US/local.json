@@ -1,5 +1,5 @@
 {
-  "手机号": "Phone",
+  "手机号": "Phone{{phone}}",
   "邮箱": "Email",
   "查看": "View",
   "搜索": "Search",

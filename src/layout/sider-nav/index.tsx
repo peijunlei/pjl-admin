@@ -1,5 +1,6 @@
 import { ROUTES } from "@/constants/routes";
 import { usePathname } from "@/hooks/usePathname";
+import { useSettings } from "@/store/settingStore";
 import { arryToTree } from "@/utils";
 import { HomeOutlined, SettingOutlined } from "@ant-design/icons";
 import { Flex, Layout, Menu } from "antd";
@@ -13,6 +14,7 @@ const tree = arryToTree(ROUTES)
 
 export default function SiderNav() {
   const pathname = usePathname()
+  const {themeMode} = useSettings()
   const [openKeys, setOpenKeys] = useState<string[]>([])
   const firstMenus = useMemo(() => {
     return tree.map((item) => {
@@ -79,10 +81,9 @@ export default function SiderNav() {
         trigger={null}
         width={80}
         style={{
-          borderRight: '1px solid #303030',
         }}>
         <Menu
-          theme="dark"
+          theme={themeMode}
           mode="inline"
           selectedKeys={selectedKeys}
           items={firstMenus}
@@ -99,7 +100,7 @@ export default function SiderNav() {
             }
           }}>
             <Menu
-              theme="dark"
+              theme={themeMode}
               mode="inline"
               openKeys={openKeys}
               onOpenChange={(keys) => setOpenKeys(keys)}

@@ -1,14 +1,16 @@
 
 import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons"
-import { Button, Card, ColorPicker, Divider, Drawer, Dropdown, Flex, FloatButton, Layout, Menu, Radio, Tabs, theme, Tooltip } from "antd"
+import { Button, Card, ColorPicker, Divider, Drawer, Dropdown, Flex, FloatButton, Layout, Menu, Radio, Switch, Tabs, theme, Tooltip } from "antd"
 import { useEffect, useRef, useState } from "react"
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom"
 import cn from 'classnames'
 import useLocale from "@/locales/useLocale"
-import { presetThemes } from "@/constants/theme"
 import SiderNav from "./sider-nav"
 import { arryToTree } from "@/utils"
 import { ROUTES } from "@/constants/routes"
+import { useSettingActions, useSettings } from "@/store/settingStore"
+import { ThemeColorPresets, ThemeMode } from "#/enum"
+import { colorPrimarys } from "@/theme"
 const { Header, Sider, Content } = Layout
 
 const tree = arryToTree(ROUTES)
@@ -30,7 +32,8 @@ const TAB_MAP = tree.reduce((map, item) => {
 
 export default function DashboardLayout() {
   const navgate = useNavigate()
-
+  const settings = useSettings()
+  const { setSettings } = useSettingActions()
   const [scrolled, setScrolled] = useState(false)
   const [drawOpen, setDrawOpen] = useState(false)
   const [openKeys, setOpenKeys] = useState<string[]>([])
@@ -56,15 +59,7 @@ export default function DashboardLayout() {
         <Header style={{ padding: 0, background: colorBgContainer }} className={cn({
           scrolled: false,
         })}>
-          <Flex align="center" justify="space-between">
-            <Button
-              type="text"
-              icon={<MenuFoldOutlined />}
-              style={{
-                width: 64,
-                height: 64,
-              }}
-            />
+          <Flex align="center" justify="flex-end">
             <Button
               type="text"
               onClick={() => {
@@ -90,20 +85,51 @@ export default function DashboardLayout() {
         />
         <Content className="container" ref={conRef}>
           <Outlet />
-          <FloatButton.Group shape="circle" style={{ insetInlineEnd: 24 }}>
+          <FloatButton.Group shape="circle" >
             <FloatButton.BackTop target={() => conRef.current!} />
             <FloatButton icon={<SettingOutlined />} type="primary" onClick={() => setDrawOpen(true)} />
           </FloatButton.Group>
         </Content>
         <Drawer title="主题设置" onClose={() => setDrawOpen(false)} open={drawOpen} closeIcon={null}>
+          <Divider dashed style={{ borderColor: colorPrimary }} >主题模式</Divider>
+          <Flex>
+            <Tooltip title='明亮'>
+              <Card
+                hoverable
+                onClick={() => {
+                  setSettings({
+                    ...settings,
+                    themeMode: ThemeMode.Light,
+                  })
+                }}
+              >明亮</Card>
+            </Tooltip>
+            <Tooltip title='暗黑'>
+              <Card
+                hoverable
+                onClick={() => {
+                  setSettings({
+                    ...settings,
+                    themeMode: ThemeMode.Dark,
+                  })
+                }}
+              >暗黑</Card>
+            </Tooltip>
+          </Flex>
           <Divider dashed style={{ borderColor: colorPrimary }} >预设颜色</Divider>
           <Flex>
             {
-              Object.entries(presetThemes).map(([key, value]) => {
+              Object.entries(colorPrimarys).map(([key, value]) => {
                 return (
                   <Tooltip title={key} key={key}>
                     <Card
                       hoverable
+                      onClick={() => {
+                        setSettings({
+                          ...settings,
+                          themeColorPresets: key as ThemeColorPresets,
+                        })
+                      }}
                       style={{ background: value }}
                     />
                   </Tooltip>
@@ -111,8 +137,6 @@ export default function DashboardLayout() {
               })
             }
           </Flex>
-          <Divider dashed style={{ borderColor: colorPrimary }} >自定义颜色</Divider>
-          <ColorPicker />
         </Drawer>
       </Layout>
     </Layout>

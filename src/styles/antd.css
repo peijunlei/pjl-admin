@@ -28,12 +28,20 @@
 	}
 }
 .ant-layout-sider {
+	background: inherit;
 	.ant-menu-submenu,
 	.ant-menu-submenu-open,
 	.ant-menu-submenu-selected {
 		a {
 			color: inherit;
 		}
+	}
+	&.ant-layout-sider-dark .ant-menu {
+		background: inherit!important;
+	}
+	.ant-layout-sider-trigger{
+		background: inherit;
+		color: inherit;
 	}
 }
 #nprogress .bar {
