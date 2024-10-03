@@ -1,3 +1,4 @@
+import SvgIcon from "@/components/svg-icon";
 import { useTranslation } from "react-i18next";
 
 

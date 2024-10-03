@@ -18,9 +18,11 @@
 }
 
 .ant-layout-header {
+	background: inherit;
 	/* position: fixed; */
 	width: 100%;
-	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+	border-bottom:1px solid var(--ant-color-split);
+	/* box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1); */
 	transition: all 0.5s;
 	&.scrolled {
 		backdrop-filter: blur(8px);
@@ -37,11 +39,20 @@
 		}
 	}
 	&.ant-layout-sider-dark .ant-menu {
+		height: 100%;
 		background: inherit!important;
+		border-right:1px solid var(--ant-color-split);
 	}
 	.ant-layout-sider-trigger{
 		background: inherit;
 		color: inherit;
+		border:1px solid var(--ant-color-split);
+		border-left: none;
+	}
+}
+.ant-tabs-nav {
+	&::before{
+		display: none;
 	}
 }
 #nprogress .bar {

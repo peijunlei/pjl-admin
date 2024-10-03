@@ -1,9 +1,11 @@
+import React from "react";
+import { DesktopOutlined, LockOutlined } from "@ant-design/icons";
 interface Menu{
   id:string;
   name:string;
   parentId:string|null;
   route:string;
-  icon:string|null;
+  icon:string|React.ReactNode|null;
 }
 
 export const ROUTES:Menu[]=[
@@ -47,7 +49,7 @@ export const ROUTES:Menu[]=[
     route:'system',
     name:'系统设置',
     parentId:'3',
-    icon:null
+    icon:<DesktopOutlined />
   },
   {
     id:'3-1-1',
@@ -61,7 +63,7 @@ export const ROUTES:Menu[]=[
     route:'auth',
     name:'权限设置',
     parentId:'3',
-    icon:null
+    icon:<LockOutlined />
   },
   {
     id:'3-2-1',

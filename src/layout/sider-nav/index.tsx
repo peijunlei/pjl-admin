@@ -1,9 +1,10 @@
+import SvgIcon from "@/components/svg-icon";
 import { ROUTES } from "@/constants/routes";
 import { usePathname } from "@/hooks/usePathname";
 import { useSettings } from "@/store/settingStore";
 import { arryToTree } from "@/utils";
 import { HomeOutlined, SettingOutlined } from "@ant-design/icons";
-import { Flex, Layout, Menu } from "antd";
+import { Flex, Layout, Menu, theme } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -14,7 +15,10 @@ const tree = arryToTree(ROUTES)
 
 export default function SiderNav() {
   const pathname = usePathname()
-  const {themeMode} = useSettings()
+  const {
+    token: { colorPrimary },
+  } = theme.useToken();
+  const { themeMode } = useSettings()
   const [openKeys, setOpenKeys] = useState<string[]>([])
   const firstMenus = useMemo(() => {
     return tree.map((item) => {
@@ -43,7 +47,7 @@ export default function SiderNav() {
             return {
               key: toPath,
               label: item.name,
-              icon: <SettingOutlined />,
+              icon: item.icon || null,
               children: item.children.map((child) => {
                 const toPath = `/${first}/${item.route}/${child.route}`
                 return {
@@ -91,14 +95,16 @@ export default function SiderNav() {
       </Sider>
       {
         secondMenus.length > 0 && (
-          <Sider collapsible onCollapse={(collapsed) => {
-            // 收起后，会把openKeys清空，所以展开时，需要重新设置openKeys
-            if (!collapsed) {
-              const keys = pathname.split('/')
-              const _openKeys = keys.slice(0, 3).join('/')
-              setOpenKeys([_openKeys])
-            }
-          }}>
+          <Sider
+            collapsible
+            onCollapse={(collapsed) => {
+              // 收起后，会把openKeys清空，所以展开时，需要重新设置openKeys
+              if (!collapsed) {
+                const keys = pathname.split('/')
+                const _openKeys = keys.slice(0, 3).join('/')
+                setOpenKeys([_openKeys])
+              }
+            }}>
             <Menu
               theme={themeMode}
               mode="inline"

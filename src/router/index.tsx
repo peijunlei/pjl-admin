@@ -2,9 +2,9 @@ import { createHashRouter, Navigate, RouterProvider } from "react-router-dom";
 import DashboardLayout from "../layout";
 import { authRoutes, commonRoutes } from "./routes";
 import { lazy, Suspense, useMemo } from "react";
-import ProgressBar from "@/components/progress-bar";
 import { ROUTES } from "@/constants/routes";
 import { arryToTree } from "@/utils";
+import ProgressBar from "@/components/progress-bar";
 
 
 const Login = lazy(commonRoutes.login);

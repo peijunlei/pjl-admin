@@ -15,7 +15,7 @@ export enum ThemeColorPresets {
   Purple = 'purple',
   Blue = 'blue',
   Orange = 'orange',
-  Red = 'red',
+  Pink = 'pink',
 }
 
 export enum StorageEnum {

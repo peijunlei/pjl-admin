@@ -7,6 +7,7 @@ import { StorageEnum, ThemeColorPresets, ThemeMode } from '#/enum';
 type SettingsType = {
   themeColorPresets: ThemeColorPresets;
   themeMode: ThemeMode;
+  multiTab: boolean;
 };
 type SettingStore = {
   settings: SettingsType;
@@ -21,6 +22,7 @@ const useSettingStore = create<SettingStore>((set) => ({
   settings: getItem<SettingsType>(StorageEnum.Settings) || {
     themeColorPresets: ThemeColorPresets.Default,
     themeMode: ThemeMode.Light,
+    multiTab: true,
   },
   actions: {
     setSettings: (settings) => {

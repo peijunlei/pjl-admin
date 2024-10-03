@@ -8,5 +8,5 @@ export const colorPrimarys: {
   purple: '#7635DC',
   blue: '#2065D1',
   orange: '#F56C1D',
-  red: '#FF3030',
+  pink: '#ff69b4',
 };
