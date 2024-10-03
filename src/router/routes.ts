@@ -2,6 +2,7 @@
 
 export const commonRoutes = {
 	login: () => import("@/pages/login/index"),
+	loginCode: () => import("@/pages/login-code/index"),
   404: () => import("@/pages/404/index"),
 
 }

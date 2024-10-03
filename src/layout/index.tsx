@@ -1,5 +1,5 @@
 
-import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons"
+import { HomeOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons"
 import { Button, Card, ColorPicker, Divider, Drawer, Dropdown, Flex, FloatButton, Form, Layout, Menu, Radio, Switch, Tabs, theme, Tooltip } from "antd"
 import { useEffect, useRef, useState } from "react"
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom"
@@ -9,10 +9,11 @@ import SiderNav from "./sider-nav"
 import { arryToTree } from "@/utils"
 import { ROUTES } from "@/constants/routes"
 import { useSettingActions, useSettings } from "@/store/settingStore"
-import { ThemeColorPresets, ThemeMode } from "#/enum"
+import { StorageEnum, ThemeColorPresets, ThemeMode } from "#/enum"
 import { colorPrimarys } from "@/theme"
 import SvgIcon from "@/components/svg-icon"
 import { useThemeToken } from "@/hooks/useThemeToken"
+import { removeItem } from "@/utils/storage"
 const { Header, Sider, Content } = Layout
 
 const tree = arryToTree(ROUTES)
@@ -56,7 +57,8 @@ export default function DashboardLayout() {
       <SiderNav />
       <Layout>
         <Header style={{ padding: 0 }}>
-          <Flex align="center" justify="flex-end">
+          <Flex align="center" justify="flex-end" >
+
             <Button
               type="text"
               onClick={() => {
@@ -67,12 +69,42 @@ export default function DashboardLayout() {
                 height: 64,
               }}
             > {currentLang === 'zh_CN' ? 'EN' : '中文'}</Button>
+            <Dropdown menu={{
+              items: [
+                {
+                  label: '个人中心',
+                  key: '1',
+                  icon: <UserOutlined />,
+                },
+                {
+                  label: '退出登录',
+                  key: '2',
+                  icon: <LogoutOutlined />,
+                  onClick: () => {
+                    console.log('退出登录')
+                    removeItem(StorageEnum.Token)
+                    navgate('/login')
+                  }
+                }
+              ]
+            }}>
+              <Button
+                icon={<UserOutlined />}
+                type="text"
+                style={{
+                  height: 64,
+                }}
+              >
+                peijunlei
+              </Button>
+            </Dropdown>
           </Flex>
 
         </Header>
         {
           settings.multiTab && (
             <Tabs
+              type="card"
               activeKey={location.pathname}
               onChange={(key) => { navgate(key) }}
               items={tabKeys.map((key) => ({

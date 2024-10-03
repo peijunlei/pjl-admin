@@ -8,6 +8,7 @@ import ProgressBar from "@/components/progress-bar";
 
 
 const Login = lazy(commonRoutes.login);
+const LoginCode = lazy(commonRoutes.loginCode);
 const NotFound = lazy(commonRoutes[404]);
 const tree = arryToTree(ROUTES)
 
@@ -109,6 +110,14 @@ export function Router() {
       element: (
         <Suspense fallback={<ProgressBar />} >
           <Login />
+        </Suspense>
+      )
+    },
+    {
+      path: "/login-code",
+      element: (
+        <Suspense fallback={<ProgressBar />} >
+          <LoginCode />
         </Suspense>
       )
     },
