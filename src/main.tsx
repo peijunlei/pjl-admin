@@ -7,7 +7,7 @@ import 'virtual:svg-icons-register';
 
 import './styles/index.css'
 
-
+console.log(import.meta.env.VITE_BASE_API)
 createRoot(document.getElementById('root')!).render(
   <App />
 )
