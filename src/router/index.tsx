@@ -1,10 +1,12 @@
-import { createHashRouter, Navigate, RouterProvider } from "react-router-dom";
+import { createHashRouter, Navigate, Outlet, RouterProvider, useOutlet } from "react-router-dom";
 import DashboardLayout from "../layout";
 import { authRoutes, commonRoutes } from "./routes";
 import { lazy, Suspense, useMemo } from "react";
 import { ROUTES } from "@/constants/routes";
 import { arryToTree } from "@/utils";
 import ProgressBar from "@/components/progress-bar";
+import { SwitchTransition, CSSTransition } from "react-transition-group";
+import LoginLayout from "@/layout/login-layout";
 
 
 const Login = lazy(commonRoutes.login);
@@ -43,9 +45,9 @@ function treeToRouter(tree: treeItem[], firstRoute = import.meta.env.VITE_HOME_P
       routers.push({
         path: route,
         element: (
-          <Suspense fallback={<ProgressBar />} >
+          // <Suspense fallback={<ProgressBar />} >
             <Component />
-          </Suspense>
+          // </Suspense>
         )
       })
     }
@@ -54,6 +56,7 @@ function treeToRouter(tree: treeItem[], firstRoute = import.meta.env.VITE_HOME_P
 }
 
 export function Router() {
+  const outlet = useOutlet()
   const authRouters = useMemo(() => {
     return treeToRouter(tree)
   }, [])
@@ -107,20 +110,38 @@ export function Router() {
     },
     {
       path: "/login",
-      element: (
-        <Suspense fallback={<ProgressBar />} >
-          <Login />
-        </Suspense>
-      )
+      element: <LoginLayout />,
+      children: [
+        {
+          path: '',
+          element: (
+            <Login />
+          )
+        },
+        {
+          path: "code",
+          element: (
+            <LoginCode />
+          )
+        }
+      ]
     },
-    {
-      path: "/login-code",
-      element: (
-        <Suspense fallback={<ProgressBar />} >
-          <LoginCode />
-        </Suspense>
-      )
-    },
+    // {
+    //   path: "/login",
+    //   element: (
+    //     <Suspense fallback={<ProgressBar />} >
+    //       <Login />
+    //     </Suspense>
+    //   )
+    // },
+    // {
+    //   path: "/login-code",
+    //   element: (
+    //     <Suspense fallback={<ProgressBar />} >
+    //       <LoginCode />
+    //     </Suspense>
+    //   )
+    // },
     {
       path: "/404",
       element: (

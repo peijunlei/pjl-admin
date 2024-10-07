@@ -1,9 +1,8 @@
 
-import { HomeOutlined, LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, QuestionCircleOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons"
+import { HomeOutlined, LogoutOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons"
 import { Button, Card, ColorPicker, Divider, Drawer, Dropdown, Flex, FloatButton, Form, Layout, Menu, Radio, Switch, Tabs, theme, Tooltip } from "antd"
-import { useEffect, useRef, useState } from "react"
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom"
-import cn from 'classnames'
+import { Suspense, useEffect, useRef, useState } from "react"
+import { useNavigate, useOutlet } from "react-router-dom"
 import useLocale from "@/locales/useLocale"
 import SiderNav from "./sider-nav"
 import { arryToTree } from "@/utils"
@@ -14,7 +13,10 @@ import { colorPrimarys } from "@/theme"
 import SvgIcon from "@/components/svg-icon"
 import { useThemeToken } from "@/hooks/useThemeToken"
 import { removeItem } from "@/utils/storage"
-const { Header, Sider, Content } = Layout
+import { SwitchTransition, CSSTransition } from "react-transition-group"
+import { usePathname } from "@/hooks/usePathname"
+import ProgressBar from "@/components/progress-bar"
+const { Header, Content } = Layout
 
 const tree = arryToTree(ROUTES)
 
@@ -35,23 +37,26 @@ const TAB_MAP = tree.reduce((map, item) => {
 
 export default function DashboardLayout() {
   const navgate = useNavigate()
+  const currentOutlet = useOutlet()
   const settings = useSettings()
   const { setSettings } = useSettingActions()
   const [drawOpen, setDrawOpen] = useState(false)
   const [tabKeys, setTabKeys] = useState<string[]>([])
-  const location = useLocation()
+  const pathname = usePathname()
   const conRef = useRef(null)
+  const nodeRef = useRef(null);
+
   const { setLocale, currentLang } = useLocale()
   const { colorPrimary } = useThemeToken()
 
   useEffect(() => {
     setTabKeys((keys) => {
-      if (keys.includes(location.pathname)) {
+      if (keys.includes(pathname)) {
         return keys
       }
-      return [...keys, location.pathname]
+      return [...keys, pathname]
     })
-  }, [location.pathname])
+  }, [pathname])
   return (
     <Layout style={{ height: '100%' }}>
       <SiderNav />
@@ -105,7 +110,7 @@ export default function DashboardLayout() {
           settings.multiTab && (
             <Tabs
               type="card"
-              activeKey={location.pathname}
+              activeKey={pathname}
               onChange={(key) => { navgate(key) }}
               items={tabKeys.map((key) => ({
                 key,
@@ -114,14 +119,26 @@ export default function DashboardLayout() {
             />
           )
         }
-
         <Content className="container" ref={conRef}>
-          <Outlet />
+          <SwitchTransition mode="out-in">
+            <CSSTransition
+              key={pathname}
+              appear={true}
+              timeout={300}
+              classNames="page"
+              unmountOnExit
+            >
+              <Suspense fallback={<ProgressBar />} >
+                {currentOutlet}
+              </Suspense>
+            </CSSTransition>
+          </SwitchTransition>
           <FloatButton.Group shape="circle" >
             <FloatButton.BackTop target={() => conRef.current!} />
             <FloatButton icon={<SettingOutlined />} type="primary" onClick={() => setDrawOpen(true)} />
           </FloatButton.Group>
         </Content>
+
 
         <Drawer title="主题设置" onClose={() => setDrawOpen(false)} open={drawOpen} closeIcon={null}>
           <Flex vertical gap={20}>

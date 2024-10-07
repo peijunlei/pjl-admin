@@ -1,5 +1,6 @@
 .ant-layout-content {
-	overflow-y: scroll;
+	overflow: hidden;
+	overflow-y: auto;
 	padding: 10px;
 	/* padding-top: 64px; */
 	/* scroll bar */
