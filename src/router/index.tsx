@@ -9,9 +9,12 @@ import { SwitchTransition, CSSTransition } from "react-transition-group";
 import LoginLayout from "@/layout/login-layout";
 
 
-const Login = lazy(commonRoutes.login);
-const LoginCode = lazy(commonRoutes.loginCode);
-const NotFound = lazy(commonRoutes[404]);
+// const Login = lazy(commonRoutes.login);
+// const LoginCode = lazy(commonRoutes.loginCode);
+// const NotFound = lazy(commonRoutes[404]);
+import Login from "@/pages/login";
+import LoginCode from "@/pages/login-code";
+import NotFound from "@/pages/404";
 const tree = arryToTree(ROUTES)
 
 interface treeItem {
