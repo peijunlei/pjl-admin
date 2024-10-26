@@ -1,11 +1,10 @@
-import { createHashRouter, Navigate, Outlet, RouterProvider, useOutlet } from "react-router-dom";
+import { createHashRouter, Navigate, RouterProvider, useOutlet } from "react-router-dom";
 import DashboardLayout from "../layout";
-import { authRoutes, commonRoutes } from "./routes";
+import { authRoutes } from "./routes";
 import { lazy, Suspense, useMemo } from "react";
 import { ROUTES } from "@/constants/routes";
 import { arryToTree } from "@/utils";
 import ProgressBar from "@/components/progress-bar";
-import { SwitchTransition, CSSTransition } from "react-transition-group";
 import LoginLayout from "@/layout/login-layout";
 
 
