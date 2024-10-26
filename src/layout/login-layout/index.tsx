@@ -1,6 +1,6 @@
 import { usePathname } from "@/hooks/usePathname";
 import { Flex } from "antd";
-import { useOutlet } from "react-router-dom";
+import { Outlet, useOutlet } from "react-router-dom";
 import { SwitchTransition, CSSTransition } from "react-transition-group";
 
 
@@ -10,7 +10,7 @@ import { Suspense } from "react";
 import ProgressBar from "@/components/progress-bar";
 
 export default function LoginLayout() {
-  const currentOutlet = useOutlet()
+  // const currentOutlet = useOutlet()
   const pathname = usePathname()
   return (
     <Flex align="center" justify="center" style={{
@@ -27,9 +27,7 @@ export default function LoginLayout() {
           classNames="page"
           unmountOnExit
         >
-          <Suspense fallback={<ProgressBar />} >
-            {currentOutlet}
-          </Suspense>
+          <Outlet />
         </CSSTransition>
       </SwitchTransition>
     </Flex>

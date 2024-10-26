@@ -1,17 +1,19 @@
-import { createHashRouter, Navigate, Outlet, RouterProvider, useOutlet } from "react-router-dom";
+import { createHashRouter, Navigate, RouterProvider, useOutlet } from "react-router-dom";
 import DashboardLayout from "../layout";
-import { authRoutes, commonRoutes } from "./routes";
+import { authRoutes } from "./routes";
 import { lazy, Suspense, useMemo } from "react";
 import { ROUTES } from "@/constants/routes";
 import { arryToTree } from "@/utils";
 import ProgressBar from "@/components/progress-bar";
-import { SwitchTransition, CSSTransition } from "react-transition-group";
 import LoginLayout from "@/layout/login-layout";
 
 
-const Login = lazy(commonRoutes.login);
-const LoginCode = lazy(commonRoutes.loginCode);
-const NotFound = lazy(commonRoutes[404]);
+// const Login = lazy(commonRoutes.login);
+// const LoginCode = lazy(commonRoutes.loginCode);
+// const NotFound = lazy(commonRoutes[404]);
+import Login from "@/pages/login";
+import LoginCode from "@/pages/login-code";
+import NotFound from "@/pages/404";
 const tree = arryToTree(ROUTES)
 
 interface treeItem {
