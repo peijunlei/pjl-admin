@@ -1,5 +1,5 @@
 # React + TypeScript + Vite
-后台模版
+后台模版-部署在阿里云
 ## feature
 - [x] 路由 react-router-dom v6
 - [x] 路由懒加载
